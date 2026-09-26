@@ -288,7 +288,7 @@ sub{font-size:.7em}
 </div><!-- /wrap -->
 <div id="toast">&#10003; Done</div>
 <footer>
-  <span>X<sub>ij</sub></span> = flow from facility j to demand i &nbsp;&middot;&nbsp;
+  <span>X<sub>ij</sub></span> = flow from facility i to market j &nbsp;&middot;&nbsp;
   <span>Y<sub>j</sub></span> &isin; {0,1} = binary open indicator &nbsp;&middot;&nbsp;
   <span>Cap<sub>j</sub></span> = individual facility capacity
 </footer>
@@ -440,18 +440,18 @@ function generateFormulation(){
     const{d,f,C,demand,fixedLow,fixedHigh,capLow,capHigh,facilityNames,demandNames}=m;
     html+='<h3>Objective Function &mdash; Minimize Total Cost</h3>';
     let terms=[];
-    for(let i=1;i<=d;i++) for(let j=1;j<=f;j++) terms.push(C[i][j]+'&middot;X<sub>'+i+j+'</sub>');
+    for(let i=1;i<=d;i++) for(let j=1;j<=f;j++) terms.push(C[i][j]+'&middot;X<sub>'+j+i+'</sub>');
     for(let j=1;j<=f;j++) terms.push(fixedLow[j]+'&middot;Y<sup>L</sup><sub>'+j+'</sub>');
     for(let j=1;j<=f;j++) terms.push(fixedHigh[j]+'&middot;Y<sup>H</sup><sub>'+j+'</sub>');
     html+='<div class="blk"><div class="obj">min Z = '+terms.join(' + ')+'</div></div>';
     html+='<h3>Subject To</h3>';
     html+='<div style="font-size:.63rem;font-weight:700;color:var(--cyan);margin-bottom:6px;letter-spacing:1.5px;">&#9472;&#9472; DEMAND CONSTRAINTS</div>';
     html+='<div class="blk"><div class="cl">';
-    for(let i=1;i<=d;i++){let p=[];for(let j=1;j<=f;j++) p.push('X<sub>'+i+j+'</sub>');html+='<div>'+p.join(' + ')+' = '+demand[i]+'&nbsp;&nbsp;&forall;i='+i+'('+demandNames[i-1]+')</div>';}
+    for(let i=1;i<=d;i++){let p=[];for(let j=1;j<=f;j++) p.push('X<sub>'+j+i+'</sub>');html+='<div>'+p.join(' + ')+' = '+demand[i]+'&nbsp;&nbsp;&forall;i='+i+'('+demandNames[i-1]+')</div>';}
     html+='</div></div>';
     html+='<div style="font-size:.63rem;font-weight:700;color:var(--gold);margin-top:12px;margin-bottom:6px;letter-spacing:1.5px;">&#9472;&#9472; CAPACITY CONSTRAINTS</div>';
     html+='<div class="blk cap"><div class="cl">';
-    for(let j=1;j<=f;j++){let p=[];for(let i=1;i<=d;i++) p.push('X<sub>'+i+j+'</sub>');html+='<div>'+p.join(' + ')+' &le; '+capLow[j]+'&middot;Y<sup>L</sup><sub>'+j+'</sub> + '+capHigh[j]+'&middot;Y<sup>H</sup><sub>'+j+'</sub>&nbsp;&nbsp;&forall;j='+j+'</div>';}
+    for(let j=1;j<=f;j++){let p=[];for(let i=1;i<=d;i++) p.push('X<sub>'+j+i+'</sub>');html+='<div>'+p.join(' + ')+' &le; '+capLow[j]+'&middot;Y<sup>L</sup><sub>'+j+'</sub> + '+capHigh[j]+'&middot;Y<sup>H</sup><sub>'+j+'</sub>&nbsp;&nbsp;&forall;j='+j+'</div>';}
     html+='</div></div>';
     html+='<div style="font-size:.63rem;font-weight:700;color:var(--purple);margin-top:12px;margin-bottom:6px;letter-spacing:1.5px;">&#9472;&#9472; CAPACITY LEVEL CHOICE </div>';
     html+='<div class="blk" style="border-left-color:var(--purple)"><div class="cl">';
@@ -459,28 +459,28 @@ function generateFormulation(){
     html+='</div></div>';
     html+='<div style="font-size:.63rem;font-weight:700;color:var(--green);margin-top:12px;margin-bottom:6px;letter-spacing:1.5px;">&#9472;&#9472; NON-NEGATIVITY CONSTRAINTS</div>';
     html+='<div class="blk var"><div class="cl">';
-    for(let i=1;i<=d;i++) for(let j=1;j<=f;j++) html+='<div>X<sub>'+i+j+'</sub> &ge; 0</div>';
+    for(let i=1;i<=d;i++) for(let j=1;j<=f;j++) html+='<div>X<sub>'+j+i+'</sub> &ge; 0</div>';
     for(let j=1;j<=f;j++) html+='<div>Y<sup>L</sup><sub>'+j+'</sub>, Y<sup>H</sup><sub>'+j+'</sub> &isin; {0,1}</div>';
     html+='</div></div>';
   } else {
     const{d,f,C,demand,fixedCost,cap}=m;
     html+='<h3>Objective Function &mdash; Minimize Total Cost</h3>';
     let terms=[];
-    for(let i=1;i<=d;i++) for(let j=1;j<=f;j++) terms.push(C[i][j]+'&middot;X<sub>'+i+j+'</sub>');
+    for(let i=1;i<=d;i++) for(let j=1;j<=f;j++) terms.push(C[i][j]+'&middot;X<sub>'+j+i+'</sub>');
     for(let j=1;j<=f;j++) if(fixedCost[j]) terms.push(fixedCost[j]+'&middot;Y<sub>'+j+'</sub>');
     html+='<div class="blk"><div class="obj">min Z = '+terms.join(' + ')+'</div></div>';
     html+='<h3>Subject To</h3>';
     html+='<div style="font-size:.63rem;font-weight:700;color:var(--cyan);margin-bottom:6px;letter-spacing:1.5px;">&#9472;&#9472; DEMAND CONSTRAINTS</div>';
     html+='<div class="blk"><div class="cl">';
-    for(let i=1;i<=d;i++){let p=[];for(let j=1;j<=f;j++) p.push('X<sub>'+i+j+'</sub>');html+='<div>'+p.join(' + ')+' = '+demand[i]+'&nbsp;&nbsp;&forall;i='+i+'</div>';}
+    for(let i=1;i<=d;i++){let p=[];for(let j=1;j<=f;j++) p.push('X<sub>'+j+i+'</sub>');html+='<div>'+p.join(' + ')+' = '+demand[i]+'&nbsp;&nbsp;&forall;i='+i+'</div>';}
     html+='</div></div>';
     html+='<div style="font-size:.63rem;font-weight:700;color:var(--gold);margin-top:12px;margin-bottom:6px;letter-spacing:1.5px;">&#9472;&#9472; CAPACITY CONSTRAINTS</div>';
     html+='<div class="blk cap"><div class="cl">';
-    for(let j=1;j<=f;j++){let p=[];for(let i=1;i<=d;i++) p.push('X<sub>'+i+j+'</sub>');html+='<div>'+p.join(' + ')+' &le; '+cap[j]+'&middot;Y<sub>'+j+'</sub>&nbsp;&nbsp;&forall;j='+j+'</div>';}
+    for(let j=1;j<=f;j++){let p=[];for(let i=1;i<=d;i++) p.push('X<sub>'+j+i+'</sub>');html+='<div>'+p.join(' + ')+' &le; '+cap[j]+'&middot;Y<sub>'+j+'</sub>&nbsp;&nbsp;&forall;j='+j+'</div>';}
     html+='</div></div>';
     html+='<div style="font-size:.63rem;font-weight:700;color:var(--green);margin-top:12px;margin-bottom:6px;letter-spacing:1.5px;">&#9472;&#9472; NON-NEGATIVITY CONSTRAINTS</div>';
     html+='<div class="blk var"><div class="cl">';
-    for(let i=1;i<=d;i++) for(let j=1;j<=f;j++) html+='<div>X<sub>'+i+j+'</sub> &ge; 0</div>';
+    for(let i=1;i<=d;i++) for(let j=1;j<=f;j++) html+='<div>X<sub>'+j+i+'</sub> &ge; 0</div>';
     for(let j=1;j<=f;j++) html+='<div>Y<sub>'+j+'</sub> &isin; {0,1}</div>';
     html+='</div></div>';
     html+='<details><summary>&#9656; Data Snapshot</summary><div>Demands: '+demand.slice(1).join(', ')+'<br>Fixed Costs: '+fixedCost.slice(1).join(', ')+'<br>Capacities: '+cap.slice(1).join(', ')+'</div></details>';
@@ -873,7 +873,7 @@ function renderSolutionBook(res,m,el){
     const lvlCol=isL?'var(--gold)':isH?'var(--purple)':'var(--ink3)';
     h+='<tr><td style="border:1px solid var(--border);padding:7px 10px;background:var(--bg2);color:'+(open?'var(--cyan)':'var(--ink3)')+';font-family:var(--mono);font-weight:700;font-size:.73rem;">'+facilityNames[j-1]+'</td>';
     let tot=0;
-    for(let i=1;i<=d;i++){const v=res.X[i][j];tot+=v;const col=v>0.01?(open?'var(--cyan)':'var(--gold)'):'var(--ink3)';h+='<td style="border:1px solid var(--border);padding:7px 10px;color:'+col+';font-family:var(--mono);">'+(v>0.01?v.toFixed(1):'—')+'</td>';}
+    for(let i=1;i<=d;i++){const v=res.X[i][j];tot+=v;const col=v>0.01?(open?'var(--cyan)':'var(--gold)'):'var(--ink3)';h+='<td style="border:1px solid var(--border);padding:7px 10px;color:'+col+';font-family:var(--mono);"><span style="display:block;font-size:.58rem;opacity:.6;">X<sub>'+j+i+'</sub></span>'+(v>0.01?v.toFixed(1):'—')+'</td>';}
     h+='<td style="border:1px solid var(--border);padding:7px 10px;color:'+(open?'var(--cyan)':'var(--ink3)')+';font-family:var(--mono);font-weight:700;">'+(open?tot.toFixed(1):'0')+'</td>';
     h+='<td style="border:1px solid var(--border);padding:7px 10px;color:var(--ink3);font-family:var(--mono);">'+(open?cap:'—')+'</td>';
     h+='<td style="border:1px solid var(--border);padding:7px 10px;color:'+lvlCol+';font-family:var(--mono);font-weight:700;">'+lvl+'</td></tr>';
@@ -919,7 +919,7 @@ function closedBlock(Y,f,nameFn){
 function flowTable(X,Y,d,f,demand,cap,dFn,fFn){
   let h='<div style="font-size:.65rem;font-weight:700;color:var(--gold);letter-spacing:1.5px;margin-bottom:6px;">&#9472;&#9472; OPTIMAL FLOW MATRIX X<sub>ij</sub></div>';
   h+='<div style="overflow-x:auto;margin-bottom:14px;"><table style="border-collapse:collapse;font-size:.75rem;">';
-  h+='<thead><tr><th style="border:1px solid var(--border);padding:7px 12px;background:var(--bg2);color:var(--ink3);font-size:.65rem;text-transform:uppercase;">F \\ D</th>';
+  h+='<thead><tr><th style="border:1px solid var(--border);padding:7px 12px;background:var(--bg2);color:var(--ink3);font-size:.65rem;text-transform:uppercase;">Facility i \\ Market j</th>';
   for(let i=1;i<=d;i++){h+='<th style="border:1px solid var(--border);padding:7px 12px;background:var(--bg2);color:var(--gold);font-size:.65rem;">'+dFn(i)+'</th>';}
   h+='<th style="border:1px solid var(--border);padding:7px 12px;background:var(--bg2);color:var(--cyan);font-size:.65rem;">Total</th>';
   h+='<th style="border:1px solid var(--border);padding:7px 12px;background:var(--bg2);color:var(--ink3);font-size:.65rem;">Capacity</th></tr></thead><tbody>';
@@ -927,7 +927,7 @@ function flowTable(X,Y,d,f,demand,cap,dFn,fFn){
     const open=Y[j]===1;
     h+='<tr><td style="border:1px solid var(--border);padding:7px 12px;background:var(--bg2);color:'+(open?'var(--cyan)':'var(--ink3)')+';font-family:var(--mono);font-weight:700;">'+fFn(j)+(open?' &#9679;':'')+'</td>';
     let rowT=0;
-    for(let i=1;i<=d;i++){const v=X[i][j];const col=v>0.01?(open?'var(--cyan)':'var(--gold)'):'var(--ink3)';rowT+=v;h+='<td style="border:1px solid var(--border);padding:7px 12px;color:'+col+';font-family:var(--mono);">'+(v>0.01?v.toFixed(1):'—')+'</td>';}
+    for(let i=1;i<=d;i++){const v=X[i][j];const col=v>0.01?(open?'var(--cyan)':'var(--gold)'):'var(--ink3)';rowT+=v;h+='<td style="border:1px solid var(--border);padding:7px 12px;color:'+col+';font-family:var(--mono);"><span style="display:block;font-size:.6rem;opacity:.6;">X<sub>'+j+i+'</sub></span>'+(v>0.01?v.toFixed(1):'—')+'</td>';}
     h+='<td style="border:1px solid var(--border);padding:7px 12px;color:'+(open?'var(--cyan)':'var(--ink3)')+';font-family:var(--mono);font-weight:700;">'+(rowT>0.01?rowT.toFixed(1):'0')+'</td>';
     h+='<td style="border:1px solid var(--border);padding:7px 12px;color:var(--ink3);font-family:var(--mono);">'+(open?cap[j]:'—')+'</td></tr>';
   }
